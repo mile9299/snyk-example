@@ -6,11 +6,11 @@ pipeline {
         DOCKER_PORT = 3000 // Default Docker port
         SPECTRAL_DSN = credentials('SPECTRAL_DSN')
     }
-    // Added
+
     tools {
         nodejs 'NodeJS 18.0.0'
     }
-/// Added
+
     stages {
         stage('Checkout') {
             steps {
@@ -26,31 +26,21 @@ pipeline {
                 }
             }
         }
-       // stage('install Spectral') {
-         //     steps {
-           //     sh "curl -L 'https://get.spectralops.io/latest/x/sh?dsn=$SPECTRAL_DSN' | sh"
-             // }
-        //}
-       // stage('scan for issues') {
-         //     steps {
-           //     sh "$HOME/.spectral/spectral scan --ok --engines secrets,iac,oss --include-tags base,audit,iac"
-             // }
-       // }
-         stage('Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    def dockerImage = docker.build('snyk-example', '-f Dockerfile .')
+                    def dockerImage = docker.build('snyk-example:latest', '-f Dockerfile .')
                     echo 'Docker image built successfully!'
                 }
             }
         }
         stage('Falcon Cloud Security') {
-              steps {
-                withCredentials([usernameColonPassword(credentialsId: 'CRWD', variable: '')]) {
-                crowdStrikeSecurity imageName: 'snyk-example', imageTag: 'latest', enforce: true, timeout: 60
+            steps {
+                withCredentials([usernameColonPassword(credentialsId: 'CRWD', variable: 'FALCON_CREDENTIALS')]) {
+                    crowdStrikeSecurity imageName: 'snyk-example', imageTag: 'latest', enforce: true, timeout: 60
+                }
             }
-          }
         }
         stage('Deploy') {
             steps {
@@ -59,12 +49,11 @@ pipeline {
                     sh 'docker stop snyk-example || true'
                     sh 'docker rm snyk-example || true'
                     def containerId = sh(script: "docker run -d -P --name snyk-example snyk-example", returnStdout: true).trim()
-                    def dockerHostPort = sh(script: "docker port ${containerId} ${DOCKER_PORT} | cut -d ':' -f 2", returnStdout: true).trim()
+                    def dockerHostPort = sh(script: "docker port ${containerId} ${DOCKER_PORT.toString()} | cut -d ':' -f 2", returnStdout: true).trim()
                     echo "Spooky is running on http://localhost:${dockerHostPort}"
                 }
             }
         }
-        
     }
 
     post {
