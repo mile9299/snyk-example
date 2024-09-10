@@ -8,7 +8,8 @@ WORKDIR /usr/src/goof
 COPY . .
 
 # Install dependencies
-RUN npm install
+RUN npm cache clean -f
+RUN npm install --force
 
 # Optional: Update npm to the latest version
 RUN npm install -g npm@latest
