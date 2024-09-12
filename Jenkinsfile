@@ -12,7 +12,7 @@ pipeline {
         CS_USERNAME = 'mile'
         CS_PASSWORD = credentials('CS_PASSWORD')
         FALCON_REGION = 'us-1'
-        PROJECT_PATH = 'https://github.com/hashicorp/terraform-guides.git'
+        PROJECT_PATH = 'git::https://github.com/hashicorp/terraform-guides.git'
     }
 
     tools {
