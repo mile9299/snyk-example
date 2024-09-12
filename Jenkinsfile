@@ -131,7 +131,7 @@ docker run --network=host --rm "$CS_IMAGE_NAME":"$CS_IMAGE_TAG" --client-id "$CS
                     sh 'docker rm spooky || true'
                     
                     // Run the Docker container
-                    def containerId = sh(script: "docker run -d -P --name snyk-example snyk-example", returnStdout: true).trim()
+                    def containerId = sh(script: "docker run -d -P --name spooky spooky", returnStdout: true).trim()
                     def dockerHostPort = sh(script: "docker port ${containerId} ${DOCKER_PORT} | cut -d ':' -f 2", returnStdout: true).trim()
                     
                     echo "Application is running on http://localhost:${dockerHostPort}"
