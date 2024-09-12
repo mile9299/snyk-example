@@ -118,7 +118,7 @@ docker run --network=host --rm "$CS_IMAGE_NAME":"$CS_IMAGE_TAG" --client-id "$CS
         stage('Falcon Cloud Security') {
             steps {
                 withCredentials([usernameColonPassword(credentialsId: 'CRWD', variable: 'FALCON_CREDENTIALS')]) {
-                    crowdStrikeSecurity imageName: 'snyk-example', imageTag: 'latest', enforce: true, timeout: 60
+                    crowdStrikeSecurity imageName: 'spooky', imageTag: 'latest', enforce: true, timeout: 60
                 }
             }
         }
@@ -127,8 +127,8 @@ docker run --network=host --rm "$CS_IMAGE_NAME":"$CS_IMAGE_TAG" --client-id "$CS
                 script {
                     echo 'Deploying application...'
                     // Ensure stop and remove commands don't fail the pipeline if the container isn't running
-                    sh 'docker stop snyk-example || true'
-                    sh 'docker rm snyk-example || true'
+                    sh 'docker stop spooky || true'
+                    sh 'docker rm spooky || true'
                     
                     // Run the Docker container
                     def containerId = sh(script: "docker run -d -P --name snyk-example snyk-example", returnStdout: true).trim()
