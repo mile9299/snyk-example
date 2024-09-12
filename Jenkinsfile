@@ -110,7 +110,7 @@ docker run --network=host --rm "$CS_IMAGE_NAME":"$CS_IMAGE_TAG" --client-id "$CS
             steps {
                 script {
                     echo 'Building Docker image...'
-                    def dockerImage = docker.build('snyk-example:latest', '-f Dockerfile .')
+                    def dockerImage = docker.build('spooky:latest', '-f Dockerfile .')
                     echo 'Docker image built successfully!'
                 }
             }
